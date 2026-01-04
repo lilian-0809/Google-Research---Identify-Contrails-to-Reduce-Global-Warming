@@ -1,0 +1,44 @@
+data_path: '../data/contrails'
+output_dir: "save"
+
+seed: 420
+
+train_bs: 8
+valid_bs: 8
+workers: 8
+
+progress_bar_refresh_rate: 1
+
+early_stop:
+    monitor: "val_dice"
+    mode: "max"
+    patience: 8
+    verbose: 1
+
+trainer:
+    max_epochs: 29
+    min_epochs: 22
+    enable_progress_bar: True
+    precision: "16-mixed"
+    devices: 1
+
+model:
+    seg_model: "Unet"
+    encoder_name: 'tu-tf_efficientnetv2_xl'
+    loss_smooth: 1.0
+    image_size: 768
+    optimizer_params:
+        lr: 0.0001
+        weight_decay: 0.00001 #0.0
+    scheduler:
+        name: "CosineAnnealingLR"
+        params:
+            CosineAnnealingLR:
+                T_max: 1
+                eta_min: 1.0e-6
+                last_epoch: -1
+            ReduceLROnPlateau:
+                mode: "min"
+                factor: 0.31622776602
+                patience: 4
+                verbose: True
